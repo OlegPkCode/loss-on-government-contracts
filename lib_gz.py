@@ -4,7 +4,7 @@ import os
 path_to_data = '/home/olejonlm/git/data_processing_gz/data/'
 host = '127.0.0.1'
 port = '5432'
-database = 'gz'
+database = 'gz_db'
 user = 'olejonlm'
 password = '111'
 
