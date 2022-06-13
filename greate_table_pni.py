@@ -4,6 +4,11 @@ import csv
 import pprint
 from lib_gz import *
 
+'''
+Создает в базе данных таблицу pni, затем заходит по пути в переменной path_to_data , находит файл (файлы) ods, 
+конвертирует их в csv формат и заполняет из этих данных таблицу pni 
+'''
+
 try:
     # Подключиться базе данных gz
     connection = psycopg2.connect(

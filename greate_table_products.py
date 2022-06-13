@@ -3,6 +3,11 @@ from psycopg2 import Error
 import csv
 from lib_gz import *
 
+'''
+Создает в БД таблицу products, затем заходит по пути в переменной path_to_data в каталог, перебирает все файлы ods, 
+конвертирует их в формат csv и заполняет этими данными таблицу products
+'''
+
 try:
     # Подключиться базе данных gz
     connection = psycopg2.connect(

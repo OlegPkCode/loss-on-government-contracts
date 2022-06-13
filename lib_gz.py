@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-path_to_data = '/home/olejonlm/git/data_processing_gz/data/'
+path_to_data = './data/'
 host = '127.0.0.1'
 port = '5432'
 database = 'gz_db'
