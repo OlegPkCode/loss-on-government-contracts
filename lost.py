@@ -1,7 +1,16 @@
+'''
+Формируем данные предполагаемого ущерба. Для каждой позиции из таблицы customers смотрим закупочные цены у других заказчиков.
+На основе этих данных рассчитываем справедливую цену и выводим предполагаемый ущерб.
+Результат записываем в файл file_output
+'''
+
 import psycopg2
 from psycopg2 import Error
 import csv
 from lib_gz import *
+
+file_output = data_path + 'lost.csv'
+
 
 # Делаем выборку позиций, купленых по меньшей цене, чем заданная и расчитываем среднюю цену из этой выборки.
 # Возвращаем среднюю цену и все цени и контракты, которые ниже этой средней (справедливой) цены
@@ -35,32 +44,36 @@ try:
     )
     cursor = connection.cursor()
 
-    # Формируем список (словарей) из таблицы pni, где заполнено короткое наименование
-    cursor.execute("SELECT * FROM pni WHERE sname <> '';")
+    # Формируем список словарей из таблицы customer, где заполнено короткое наименование
+    cursor.execute("SELECT * FROM customer WHERE sname <> '';")
     record = cursor.fetchall()
-    list_pni = []
+    list_customer = []
+
     # Для каждой позиции из этого списка дополняем данные о справедливой цене, обоснования этой цени и предполагаемого ущерба
-    for item in record:
-        price_true, base = get_true_price(item[0], item[5], item[8])
+    for sname, name, name_dop, qty, unit, price, total, contract, year, customer in record:
+        price_true, base = get_true_price(sname, price, year)
         if price_true == '':
             lost = ''
         else:
-            lost = round(item[6] - (item[3] * price_true))
-        list_pni.append(
-            {'sname': item[0], 'name': item[1], 'name_dop': item[2], 'qty': item[3], 'unit': item[4],
-             'price': item[5], 'total': item[6], 'contract': item[7], 'year': item[8], 'customer': item[9],
+            lost = round(total - (qty * price_true))
+        list_customer.append(
+            {'sname': sname, 'name': name, 'name_dop': name_dop, 'qty': qty, 'unit': unit,
+             'price': price, 'total': total, 'contract': contract, 'year': year, 'customer': customer,
              'price_true': price_true, 'base': base, 'lost': lost})
 
+    list_customer.sort(key=lambda x: (x['year'], x['name']))
+
     # Записываем результат в csv файл
-    with open(path_to_data + 'lost.csv', 'w', newline='') as file:
+    with open(file_output, 'w', newline='') as file:
         writer = csv.writer(file, delimiter=';')
         writer.writerow(('sname', 'name', 'name_dop', 'qty', 'unit', 'price', 'total', 'contract', 'year', 'customer',
                          'price_true', 'base', 'lost'))
-        for item in list_pni:
+        for item in list_customer:
             writer.writerow(
                 (item['sname'], item['name'], item['name_dop'], replace_dot_to_comma(item['qty']), item['unit'],
                  replace_dot_to_comma(item['price']), replace_dot_to_comma(item['total']),
-                 item['contract'], item['year'], item['customer'], replace_dot_to_comma(item['price_true']), item['base'],
+                 item['contract'], item['year'], item['customer'], replace_dot_to_comma(item['price_true']),
+                 item['base'],
                  replace_dot_to_comma(item['lost'])))
 
 except (Exception, Error) as error:
