@@ -42,6 +42,7 @@ try:
 
     # Заполняем таблицу customer из одноименного csv файла
     convert_ods_to_csv(file_output)
+    print('111')
     with open(file_output, 'r') as file:
         reader = csv.DictReader(file, delimiter=';')
         num = 1
