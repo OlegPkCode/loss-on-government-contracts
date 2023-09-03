@@ -57,9 +57,9 @@ try:
                 total = replace_comma_to_dot(row['total'])
                 # Выполнение SQL-запроса для вставки данных в таблицу
                 insert_query = f"""
-                    INSERT INTO products (sname, name, name_dop, qty, unit, price, total, contract, year, customer, find_text)
+                    INSERT INTO products (sname, name, name_dop, qty, unit, price, total, contract, year, customer)
                     VALUES ('{row['sname']}', '{row['name']}', '{row['name_dop']}', '{qty}', '{row['unit']}', '{price}',
-                    '{total}', '{row['contract']}', '{row['year']}', '{row['customer']}', '{row['find_text']}');
+                    '{total}', '{row['contract']}', '{row['year']}', '{row['customer']}');
                 """
                 cursor.execute(insert_query)
                 connection.commit()
