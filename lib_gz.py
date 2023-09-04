@@ -2,13 +2,13 @@ import pandas as pd
 import os
 
 data_path = './data/'
-host = '127.0.0.1'
+host = '172.17.0.2'
 port = '5432'
 database = 'gz_db'
-user = 'olejonlm'
+user = 'olejon'
 password = '111'
 
-sqlite_db = 'gz.sqlite3'
+# sqlite_db = 'gz.sqlite3'
 
 
 
