@@ -6,8 +6,9 @@
 
 import psycopg2
 from psycopg2 import Error
+from pprint import pprint
 import csv
-from lib_gz import *
+from lib_gz import data_path, host, port, database, user, password, replace_dot_to_comma
 
 file_output = data_path + 'lost.csv'
 
@@ -43,6 +44,18 @@ try:
         password=password
     )
     cursor = connection.cursor()
+
+    # Проверка на опечатки.
+    cursor.execute("SELECT DISTINCT sname FROM customer WHERE sname <> '';")
+    records = cursor.fetchall()
+    sname_customer = {i[0] for i in records}
+
+    cursor.execute("SELECT DISTINCT sname FROM products WHERE sname <> '';")
+    records = cursor.fetchall()
+    sname_products = {i[0] for i in records}
+
+    pprint(sname_customer - sname_products)
+    pprint(sname_products - sname_customer)
 
     # Формируем список словарей из таблицы customer, где заполнено короткое наименование
     cursor.execute("SELECT * FROM customer WHERE sname <> '';")
