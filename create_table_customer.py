@@ -6,7 +6,7 @@
 import psycopg2
 import csv
 import pprint
-from lib_gz import *
+from lib_gz import data_path, host, port, database, user, password, convert_ods_to_csv, replace_comma_to_dot
 
 file_output = data_path + 'customer.csv'
 
@@ -42,7 +42,6 @@ try:
 
     # Заполняем таблицу customer из одноименного csv файла
     convert_ods_to_csv(file_output)
-    print('111')
     with open(file_output, 'r') as file:
         reader = csv.DictReader(file, delimiter=';')
         num = 1
@@ -57,7 +56,7 @@ try:
                 # Выполнение SQL-запроса для вставки данных в таблицу
                 insert_query = f"""
                     INSERT INTO customer (sname, name, name_dop, qty, unit, price, total, contract, year, customer)
-                    VALUES ('{row['sname']}', '{row['name']}', '{row['name_dop']}', '{qty}', '{row['unit']}',
+                    VALUES ('{row['sname'].strip()}', '{row['name']}', '{row['name_dop']}', '{qty}', '{row['unit']}',
                     '{price}', '{total}', '{row['contract']}', '{row['year']}', '{row['customer']}');
                 """
                 cursor.execute(insert_query)
