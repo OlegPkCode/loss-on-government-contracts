@@ -58,7 +58,7 @@ try:
                 # Выполнение SQL-запроса для вставки данных в таблицу
                 insert_query = f"""
                     INSERT INTO products (sname, name, name_dop, qty, unit, price, total, contract, year, customer)
-                    VALUES ('{row['sname']}', '{row['name']}', '{row['name_dop']}', '{qty}', '{row['unit']}', '{price}',
+                    VALUES ('{row['sname'].strip()}', '{row['name']}', '{row['name_dop']}', '{qty}', '{row['unit']}', '{price}',
                     '{total}', '{row['contract']}', '{row['year']}', '{row['customer']}');
                 """
                 cursor.execute(insert_query)
