@@ -6,7 +6,7 @@
 import psycopg2
 import csv
 import pprint
-from lib_gz import data_path, host, port, database, user, password, convert_ods_to_csv, replace_comma_to_dot
+from lib_gz import data_path, host, port, database, user, password, convert_ods_to_csv, replace_comma
 
 file_output = data_path + 'customer.csv'
 
@@ -50,9 +50,9 @@ try:
             if len(row['sname']) > 0:
                 print('Обработка строки - ', num)
                 num += 1
-                qty = replace_comma_to_dot(row['qty'])
-                price = replace_comma_to_dot(row['price'])
-                total = replace_comma_to_dot(row['total'])
+                qty = replace_comma(row['qty'])
+                price = replace_comma(row['price'])
+                total = replace_comma(row['total'])
                 # Выполнение SQL-запроса для вставки данных в таблицу
                 insert_query = f"""
                     INSERT INTO customer (sname, name, name_dop, qty, unit, price, total, contract, year, customer)

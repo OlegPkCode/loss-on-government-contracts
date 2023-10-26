@@ -8,7 +8,7 @@ import psycopg2
 from psycopg2 import Error
 from pprint import pprint
 import csv
-from lib_gz import data_path, host, port, database, user, password, replace_dot_to_comma
+from lib_gz import data_path, host, port, database, user, password, replace_dot
 
 file_output = data_path + 'lost.csv'
 
@@ -83,11 +83,11 @@ try:
                          'price_true', 'base', 'lost'))
         for item in list_customer:
             writer.writerow(
-                (item['sname'], item['name'], item['name_dop'], replace_dot_to_comma(item['qty']), item['unit'],
-                 replace_dot_to_comma(item['price']), replace_dot_to_comma(item['total']),
-                 item['contract'], item['year'], item['customer'], replace_dot_to_comma(item['price_true']),
+                (item['sname'], item['name'], item['name_dop'], replace_dot(item['qty']), item['unit'],
+                 replace_dot(item['price']), replace_dot(item['total']),
+                 item['contract'], item['year'], item['customer'], replace_dot(item['price_true']),
                  item['base'],
-                 replace_dot_to_comma(item['lost'])))
+                 replace_dot(item['lost'])))
 
 except (Exception, Error) as error:
     print('Ошибка при работе с PostgreSQL', error)
