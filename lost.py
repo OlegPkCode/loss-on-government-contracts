@@ -20,7 +20,7 @@ def get_true_price(sname, price, year):
         f"SELECT price, contract FROM products  WHERE sname = '{sname}' AND price < {price - 0.01} AND year = {year} ORDER BY price;")
     record = cursor.fetchall()
     if len(record) == 0:
-        res = ('', '')
+        res = ('', '', '')
     else:
         base = ''
         sum = 0
@@ -29,7 +29,7 @@ def get_true_price(sname, price, year):
             count += 1
             sum += item[0]
             base = base + str(item[0]) + ' - ' + item[1] + ' / '
-        res = (round(sum / count, 2), base)
+        res = (round(sum / count, 2), base, count)
 
     return res
 
@@ -64,7 +64,7 @@ try:
 
     # Для каждой позиции из этого списка дополняем данные о справедливой цене, обоснования этой цени и предполагаемого ущерба
     for sname, name, name_dop, qty, unit, price, total, contract, year, customer in record:
-        price_true, base = get_true_price(sname, price, year)
+        price_true, base, base_count = get_true_price(sname, price, year)
         if price_true == '':
             lost = ''
         else:
@@ -72,7 +72,7 @@ try:
         list_customer.append(
             {'sname': sname, 'name': name, 'name_dop': name_dop, 'qty': qty, 'unit': unit,
              'price': price, 'total': total, 'contract': contract, 'year': year, 'customer': customer,
-             'price_true': price_true, 'base': base, 'lost': lost})
+             'price_true': price_true, 'base_count': base_count, 'base': base, 'lost': lost})
 
     list_customer.sort(key=lambda x: (x['year'], x['name']))
 
@@ -80,13 +80,13 @@ try:
     with open(file_output, 'w', newline='') as file:
         writer = csv.writer(file, delimiter=';')
         writer.writerow(('sname', 'name', 'name_dop', 'qty', 'unit', 'price', 'total', 'contract', 'year', 'customer',
-                         'price_true', 'base', 'lost'))
+                         'price_true', 'base_count', 'base', 'lost'))
         for item in list_customer:
             writer.writerow(
                 (item['sname'], item['name'], item['name_dop'], replace_dot(item['qty']), item['unit'],
                  replace_dot(item['price']), replace_dot(item['total']),
                  item['contract'], item['year'], item['customer'], replace_dot(item['price_true']),
-                 item['base'],
+                 item['base_count'], item['base'],
                  replace_dot(item['lost'])))
 
 except (Exception, Error) as error:
